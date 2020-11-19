@@ -1,0 +1,13 @@
+{
+  "name": "geoapi",
+  "version": "0.0.1",
+  "description": "Get my IP address",
+  "scripts": {
+    "start": "node getMyIp.js"
+  },
+  "author": "Lance Whatley",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.0"
+  }
+}
