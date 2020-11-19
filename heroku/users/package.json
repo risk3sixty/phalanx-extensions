@@ -1,0 +1,14 @@
+{
+  "name": "phalanx-extensions-heroku-users",
+  "version": "0.0.1",
+  "description": "Get users who have access to Heroku apps.",
+  "scripts": {
+    "start": "node getUsers.js"
+  },
+  "author": "Lance Whatley",
+  "license": "MIT",
+  "dependencies": {
+    "columnify": "^1.5.4",
+    "heroku-client": "^3.1.0"
+  }
+}
