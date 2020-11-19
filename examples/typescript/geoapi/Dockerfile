@@ -13,5 +13,7 @@ RUN npm install
 
 COPY . .
 
+RUN npm run build
+
 # Default command
 CMD npm start
