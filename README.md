@@ -21,5 +21,5 @@ To create a tarball and send to the extension engine, reference the [test image 
 It's important that `-C` is used in order to enforce the context of the tarball to the root of the extension directory. The root of the directory should contain the `Dockerfile` that defines the container to execute for the extension.
 
 ```sh
-$ tar -czf repo.tgz $REPO_DIR -C $REPO_DIR .
+$ tar -czf repo.tgz -C $REPO_DIR .
 ```

@@ -10,7 +10,9 @@ import columnify from 'columnify'
   const {
     data: { users },
   } = await axios.get(
-    'https://phalanx.risk3sixty.com/api/1.0/teams/users/get',
+    `${
+      process.env.PHALANX_HOST || 'https://phalanx.risk3sixty.com'
+    }/api/1.0/teams/users/get`,
     {
       headers: {
         ['x-r3s-key']: process.env.PHALANX_API_KEY,
