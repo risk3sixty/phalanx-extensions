@@ -1,0 +1,20 @@
+{
+  "name": "phalanx-extensions-aws-cf-distributions",
+  "version": "0.0.1",
+  "description": "List information about all cloudfront distributions.",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/listDistributions.js"
+  },
+  "author": "Lance Whatley",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.795.0",
+    "columnify": "^1.5.4"
+  },
+  "devDependencies": {
+    "@types/columnify": "^1.5.0",
+    "@types/node": "^14.14.8",
+    "typescript": "^4.0.5"
+  }
+}
