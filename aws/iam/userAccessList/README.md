@@ -1,6 +1,6 @@
 # AWS IAM Users
 
-Get users who are in IAM for a particular AWS account.
+Get user access list who are in IAM for a particular AWS account.
 
 ## Environment Variables
 
