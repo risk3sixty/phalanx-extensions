@@ -27,6 +27,11 @@ export async function listGroupPolicies(group: string): Promise<string[]> {
   ]
 }
 
+export async function listAccountPolicies() {
+  const { Policies } = await iam.listPolicies({ MaxItems: 1e3 }).promise()
+  return Policies
+}
+
 // export async function getGroupPolicyDocument(
 //   group: string,
 //   policy: string
