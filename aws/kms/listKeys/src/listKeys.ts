@@ -13,6 +13,7 @@ import AWS from 'aws-sdk'
   let moreResults: boolean = true
   let nextMarker: string | undefined
   while (moreResults) {
+    // https://docs.aws.amazon.com/kms/latest/APIReference/API_ListKeys.html
     const { Keys, NextMarker } = await kms.listKeys({ Limit: 1000, Marker: nextMarker}).promise()
 
     if (Keys) {
@@ -29,14 +30,14 @@ import AWS from 'aws-sdk'
   const keysWithRotation = await Promise.all(
     allKeys.map(async (key: any) => {
       try {
+        // https://docs.aws.amazon.com/kms/latest/APIReference/API_GetKeyRotationStatus.html
         const { KeyRotationEnabled } = await kms.getKeyRotationStatus({ KeyId: key.KeyId }).promise()
         return {
           ...key,
           KeyRotationEnabled
         }
       } catch (e) {
-        // Typically permission denied for getting key rotation information,
-        // but will handle all errors
+        // Typical error is permission denied, but will handle all errors
         return { 
           ...key,
           KeyRotationEnabled: e.message
