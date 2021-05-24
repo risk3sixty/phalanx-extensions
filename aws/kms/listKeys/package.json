@@ -1,7 +1,7 @@
 {
   "name": "phalanx-extensions-aws-kms",
   "version": "0.0.1",
-  "description": "List information about all KMS CMKs (customer master keys).",
+  "description": "List information about all KMS keys for a particular AWS account.",
   "scripts": {
     "build": "tsc",
     "start": "node dist/listKeys.js"

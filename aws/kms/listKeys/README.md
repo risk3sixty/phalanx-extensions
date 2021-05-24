@@ -1,6 +1,6 @@
 # AWS KMS Keys
 
-List information about all KMS CMKs (customer master keys) for a particular AWS account.
+List information about all KMS keys for a particular AWS account.
 
 ## Environment Variables
 
