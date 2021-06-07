@@ -27,27 +27,33 @@ import AWS from 'aws-sdk'
     }
   }
 
-  const keysWithRotation = await Promise.all(
-    allKeys.map(async (key: any) => {
-      try {
-        // https://docs.aws.amazon.com/kms/latest/APIReference/API_GetKeyRotationStatus.html
-        const { KeyRotationEnabled } = await kms.getKeyRotationStatus({ KeyId: key.KeyId }).promise()
-        return {
-          ...key,
-          KeyRotationEnabled
+  if (!allKeys || allKeys.length === 0) {
+    console.log(
+      `No keys in your account in region ${process.env.AWS_REGION}.`
+    )
+  } else {
+    const keysWithRotation = await Promise.all(
+      allKeys.map(async (key: any) => {
+        try {
+          // https://docs.aws.amazon.com/kms/latest/APIReference/API_GetKeyRotationStatus.html
+          const { KeyRotationEnabled } = await kms.getKeyRotationStatus({ KeyId: key.KeyId }).promise()
+          return {
+            ...key,
+            KeyRotationEnabled
+          }
+        } catch (e) {
+          // Typical error is permission denied, but will handle all errors
+          return { 
+            ...key,
+            KeyRotationEnabled: e.message
+          }
         }
-      } catch (e) {
-        // Typical error is permission denied, but will handle all errors
-        return { 
-          ...key,
-          KeyRotationEnabled: e.message
-        }
-      }
-    })
-  )
-  
-  // console.log(columnify(keysWithRotation))
-  console.log(JSON.stringify(keysWithRotation, null, 2))
+      })
+    )
+    
+    // console.log(columnify(keysWithRotation))
+    console.log(JSON.stringify(keysWithRotation, null, 2))
+  }
 
   process.exit()
 })()
