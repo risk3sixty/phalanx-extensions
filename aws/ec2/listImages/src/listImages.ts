@@ -9,10 +9,22 @@ import AWS from 'aws-sdk'
   const ec2 = new AWS.EC2()
 
   try {
+    var params = { 
+      Owners: [
+        'self'
+      ]
+    }
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/EC2.html#describeImages-property
-    const { Images } = await ec2.describeImages().promise()
-    // console.log(columnify(Images))
-    console.log(JSON.stringify(Images, null, 2))
+    const { Images } = await ec2.describeImages(params).promise()
+
+    if (!Images || Images.length === 0) {
+      console.log(
+        `No images found in your account.`
+      )
+    } else {
+      // console.log(columnify(Images))
+      console.log(JSON.stringify(Images, null, 2))
+    }
   } catch (e) {
     console.log(e.message)
   }
