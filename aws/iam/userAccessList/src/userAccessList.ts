@@ -17,12 +17,11 @@ interface PolicyObj {
   const iam = new AWS.IAM()
 
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/IAM.html#getAccountAuthorizationDetails-property
-  const {
-    UserDetailList,
-  }: AWS.IAM.GetAccountAuthorizationDetailsResponse = await exponentialBackoff(
-    async () =>
-      await iam.getAccountAuthorizationDetails({ MaxItems: 1e3 }).promise()
-  )
+  const { UserDetailList }: AWS.IAM.GetAccountAuthorizationDetailsResponse =
+    await exponentialBackoff(
+      async () =>
+        await iam.getAccountAuthorizationDetails({ MaxItems: 1e3 }).promise()
+    )
 
   if (UserDetailList) {
     let policies: string[] = []
@@ -71,12 +70,11 @@ interface PolicyObj {
     if (allAccountPolicies) {
       allAccountPolicies = await Promise.all(
         allAccountPolicies.map(async (pol: AWS.IAM.Policy) => {
-          const {
-            Policy,
-          }: AWS.IAM.GetPolicyResponse = await exponentialBackoff(async () => {
-            assert(pol.Arn, 'ARN not available for policy')
-            return await iam.getPolicy({ PolicyArn: pol.Arn }).promise()
-          })
+          const { Policy }: AWS.IAM.GetPolicyResponse =
+            await exponentialBackoff(async () => {
+              assert(pol.Arn, 'ARN not available for policy')
+              return await iam.getPolicy({ PolicyArn: pol.Arn }).promise()
+            })
           return { ...pol, ...Policy }
         })
       )
@@ -98,7 +96,10 @@ interface PolicyObj {
       )
     }
 
-    await R3sSdk.uploadFile(WorkbookHandler.getXlsx(), `user_access_list.xlsx`)
+    await Promise.all([
+      R3sSdk.addExecutionTabularRows(users),
+      R3sSdk.uploadFile(WorkbookHandler.getXlsx(), `user_access_list.xlsx`),
+    ])
     console.log(columnify(users))
   }
 
