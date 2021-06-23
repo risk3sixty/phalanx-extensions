@@ -1,4 +1,4 @@
-module github.com/Risk3sixty-Labs/phalanx-extensions/cloud/cloudlist
+module github.com/risk3sixty/phalanx-extensions/cloud/cloudlist
 
 go 1.13
 
