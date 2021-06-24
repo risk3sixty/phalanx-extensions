@@ -9,6 +9,7 @@
   "author": "Cal Supik",
   "license": "MIT",
   "dependencies": {
+    "@risk3sixty/extension-sdk": "^0.0.8",
     "aws-sdk": "^2.795.0",
     "columnify": "^1.5.4"
   },

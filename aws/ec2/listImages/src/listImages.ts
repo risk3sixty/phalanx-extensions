@@ -1,6 +1,8 @@
 import assert from 'assert'
 import columnify from 'columnify'
 import AWS from 'aws-sdk'
+import moment from 'moment'
+import R3sSdk from '@risk3sixty/extension-sdk'
 
 ;(async function listImages() {
   assert(process.env.AWS_ACCESS_KEY_ID, 'AWS key should be available')
@@ -22,8 +24,23 @@ import AWS from 'aws-sdk'
         `No images found in your account.`
       )
     } else {
-      // console.log(columnify(Images))
-      console.log(JSON.stringify(Images, null, 2))
+      const images = Images.map(i => {
+        return {
+          id: i.ImageId,
+          name: i.Name,
+          description: i.Description,
+          type: i.ImageType,
+          public: i.Public,
+          state: i.State,
+          created: moment(i.CreationDate).format('MMM Do, YYYY h:mm a'),
+        }
+      })
+
+      console.log(columnify(images))
+      await Promise.all([
+        R3sSdk.addExecutionTabularRows(images),
+        // R3sSdk.uploadFile(),
+      ])
     }
   } catch (e) {
     console.log(e.message)
