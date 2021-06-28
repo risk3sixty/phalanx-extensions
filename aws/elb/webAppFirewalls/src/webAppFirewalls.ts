@@ -1,6 +1,8 @@
 import assert from 'assert'
 import columnify from 'columnify'
 import AWS from 'aws-sdk'
+import R3sSdk from '@risk3sixty/extension-sdk'
+import { /* exponentialBackoff, */ WorkbookHandler } from './utils'
 ;(async function webAppFirewalls() {
   try {
     assert(process.env.AWS_ACCESS_KEY_ID, 'AWS key should be available')
@@ -26,18 +28,43 @@ import AWS from 'aws-sdk'
       },
       {}
     )
-    const loadBalancersWithTargetGroups = LoadBalancers?.map((balancer) => {
-      assert(balancer.LoadBalancerArn, 'load balancer ARN not present')
-      return {
-        ...balancer,
-        targetGroups: loadBalancerArnTargetGroupsMap[balancer.LoadBalancerArn],
-      }
-    })
+    const loadBalancersWithTargetGroups =
+      LoadBalancers?.map((balancer) => {
+        try {
+          assert(balancer.LoadBalancerArn, 'load balancer ARN not present')
+          return {
+            LoadBalancerName: balancer.LoadBalancerName,
+            DNSName: balancer.DNSName,
+            CreatedTime: balancer.CreatedTime,
+            State: balancer.State?.Code,
+            Type: balancer.Type,
+            AvailabilityZones: balancer.AvailabilityZones?.map(
+              (z) => `${z.ZoneName || 'No zone'} (${z.SubnetId || 'No subnet'})`
+            ).join('\n'),
+            IpAddressType: balancer.IpAddressType,
+            TargetGroups: loadBalancerArnTargetGroupsMap[
+              balancer.LoadBalancerArn
+            ]
+              .map(
+                (g: any) =>
+                  `TargetGroupName: ${g.TargetGroupName} -- Protocol: ${g.Protocol} -- Port: ${g.Port}`
+              )
+              .join('\n'),
+          }
+        } catch (err) {
+          console.error(`Error parsing balancer`, err)
+        }
+      }).filter((b) => !!b) || []
 
-    // TODO: filter relevant columns and endpoints and send back in
-    // meaningful export for evidence request upload
-    // console.log(columnify(devices))
-    console.log(JSON.stringify(loadBalancersWithTargetGroups, null, 2))
+    WorkbookHandler.addSheet(
+      loadBalancersWithTargetGroups as any[],
+      'ELB Load Balancers'
+    )
+    await Promise.all([
+      R3sSdk.addExecutionTabularRows(loadBalancersWithTargetGroups),
+      R3sSdk.uploadFile(WorkbookHandler.getXlsx(), `elb_load_balancers.xlsx`),
+    ])
+    console.log(columnify(loadBalancersWithTargetGroups))
   } catch (err) {
     console.error(`Error getting web app firewalls`, err)
   } finally {
