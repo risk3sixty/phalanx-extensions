@@ -1,7 +1,7 @@
 import assert from 'assert'
 import columnify from 'columnify'
 import AWS from 'aws-sdk'
-import moment from 'moment'
+import dayjs from 'dayjs'
 import R3sSdk from '@risk3sixty/extension-sdk'
 
 ;(async function listImages() {
@@ -32,7 +32,7 @@ import R3sSdk from '@risk3sixty/extension-sdk'
           type: i.ImageType,
           public: i.Public,
           state: i.State,
-          created: moment(i.CreationDate).format('MMM Do, YYYY h:mm a'),
+          created: dayjs(i.CreationDate).format('MMM D, YYYY h:mm a'),
         }
       })
 
