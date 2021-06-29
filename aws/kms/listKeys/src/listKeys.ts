@@ -2,6 +2,23 @@ import assert from 'assert'
 import columnify from 'columnify'
 import AWS from 'aws-sdk'
 import R3sSdk from '@risk3sixty/extension-sdk'
+import stringify from 'csv-stringify'
+
+async function generateCsv(arrayOfObjects: any[]): Promise<string> {
+  return new Promise((resolve, reject) => {
+    stringify(
+      arrayOfObjects,
+      {
+        header: true,
+        columns: Object.keys(arrayOfObjects[0] || {}),
+      },
+      function (err: any, data: any) {
+        if (err) return reject(err)
+        resolve(data)
+      }
+    )
+  })
+}
 
 ;(async function listKeys() {
   assert(process.env.AWS_ACCESS_KEY_ID, 'AWS key should be available')
@@ -42,7 +59,7 @@ import R3sSdk from '@risk3sixty/extension-sdk'
             return {
               id: key.KeyId,
               arn: key.KeyArn,
-              rotation_enabled: KeyRotationEnabled
+              rotation_enabled: KeyRotationEnabled ? 'true' : 'false'
             }
           } catch (e) {
             // Typical error is permission denied
@@ -55,11 +72,12 @@ import R3sSdk from '@risk3sixty/extension-sdk'
         })
       )
       
-      console.log(columnify(keysWithRotation))
+      const csvData = await generateCsv(keysWithRotation)
       await Promise.all([
         R3sSdk.addExecutionTabularRows(keysWithRotation),
-        // R3sSdk.uploadFile(),
+        R3sSdk.uploadFile(csvData, 'kms-keys.csv'),
       ])
+      console.log(columnify(keysWithRotation))
     }
   } catch (e) {
     console.log(e.message)
