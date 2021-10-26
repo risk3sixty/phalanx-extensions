@@ -53,7 +53,7 @@ interface PolicyObj {
           user: u.UserName,
           user_id: u.UserId,
           // arn: u.Arn,
-          created: moment(u.CreateDate).format('MMM Do, YYYY h:mm a'),
+          created: moment(u.CreateDate).format('MMM D, YYYY h:mm a'),
           groups: u.GroupList.join(', '),
           group_policies: groupPolAry.join(', '),
           user_policies: userPolAry.join(', '),

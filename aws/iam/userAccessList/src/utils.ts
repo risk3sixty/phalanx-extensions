@@ -12,7 +12,7 @@ async function sleep(milliseconds: number): Promise<void> {
 export async function exponentialBackoff(
   promiseFunction: PromiseFunction,
   failureFunction: any = () => {},
-  err: null | Error = null,
+  err?: Error,
   totalAllowedBackoffTries: number = 3,
   backoffAttempt: number = 1
 ): Promise<any> {
@@ -23,7 +23,7 @@ export async function exponentialBackoff(
   try {
     const result = await promiseFunction()
     return result
-  } catch (err) {
+  } catch (err: any) {
     failureFunction(err, backoffAttempt)
     await sleep(backoffSecondsToWait * 1000)
     return await exponentialBackoff(
