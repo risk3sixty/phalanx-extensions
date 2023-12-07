@@ -11,7 +11,7 @@ import columnify from 'columnify'
     data: { users },
   } = await axios.get(
     `${
-      process.env.PHALANX_HOST || 'https://phalanx.risk3sixty.com'
+      process.env.PHALANX_HOST || 'https://fullcircle.risk3sixty.com'
     }/api/1.0/teams/users/get`,
     {
       headers: {
