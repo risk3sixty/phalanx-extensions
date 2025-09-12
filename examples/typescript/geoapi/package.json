@@ -9,7 +9,7 @@
   "author": "Lance Whatley",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.0"
+    "axios": "^1.12.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.8",
